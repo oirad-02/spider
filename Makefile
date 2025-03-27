@@ -1,16 +1,18 @@
-.PHONY: all install update docker git-submodule
+.PHONY: all install-docker git-submodule
 
-all: install update docker git-submodule
+all: install-docker git-submodule
 
-install:
-	sudo apt update
-	sudo apt install -y gnome-terminal
+# Docker installieren
+install-docker:
+	@if ! command -v docker &> /dev/null; then \
+		echo "Docker nicht gefunden. Installation wird gestartet..."; \
+		sudo apt update; \
+		sudo apt install -y gnome-terminal docker.io \
+	else \
+		echo "Docker ist bereits installiert."; \
+	fi
+	sudo usermod -aG docker $USER
 
-update:
-	sudo apt-get update
-
-docker:
-	sudo apt-get install -y ./docker-desktop-amd64.deb
-
+# Git-Submodule klonen
 git-submodule:
 	git submodule update --init --recursive
